@@ -1,0 +1,13 @@
+{
+  "name": "birby",
+  "owner": {
+    "name": "Birby"
+  },
+  "plugins": [
+    {
+      "name": "birby",
+      "source": "./plugins/claude-code",
+      "description": "Feed your birby.me pixel pet with every coding session"
+    }
+  ]
+}

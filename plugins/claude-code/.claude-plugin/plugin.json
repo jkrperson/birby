@@ -1,0 +1,7 @@
+{
+  "name": "birby",
+  "description": "Feed your birby.me pixel pet with every coding session — tokens in, tamagotchi out",
+  "version": "0.1.0",
+  "author": { "name": "Birby" },
+  "homepage": "https://birby.me"
+}
