@@ -2,44 +2,45 @@
 
 **Your coding agent burns tokens. Birby eats them.**
 
-Birby is a tamagotchi for vibe coders: a Claude Code plugin feeds a pixel pet
-on [birby.me](https://birby.me) with the tokens from every coding session. Your
+Birby is a tamagotchi for vibe coders: `npx birby` hooks into Claude Code,
+Codex, Gemini CLI, Cursor, and OpenCode and feeds a pixel pet on
+[birby.me](https://birby.me) with the tokens from every coding session. Your
 pet gets full, keeps a daily streak, and evolves — egg → hatchling → chick →
 birby → megabirby.
 
 ## Feed your pet (users)
 
-Inside Claude Code:
-
 ```
-/plugin marketplace add jkrperson/birby
-/plugin install birby@birby
-/birby:link
+npx birby
 ```
 
-`/birby:link` opens your browser — sign in with GitHub, click **Approve**, and
-your egg is linked. (If Claude Code says the plugin needs activating, run
-`/reload-plugins` first.)
+That's it. It opens your browser — sign in with GitHub, click **Approve** — then
+installs a feed hook into every coding agent it finds on your machine:
 
-Then just code. The plugin's `Stop` hook feeds your pet after every response —
-no effort required. Check in with `/birby:pet`.
+| Agent       | Hook                                                          |
+| ----------- | ------------------------------------------------------------- |
+| Claude Code | `Stop` in `~/.claude/settings.json`                           |
+| Codex       | `Stop` in `~/.codex/hooks.json` (enables the hooks feature)   |
+| Gemini CLI  | `AfterAgent` in `~/.gemini/settings.json`                     |
+| Cursor      | `stop` in `~/.cursor/hooks.json` — token counts are estimated |
+| OpenCode    | plugin at `~/.config/opencode/plugins/birby.js`               |
 
-Using another agent, CI, or self-hosting? Mint a connect token at
-[birby.me/link](https://birby.me/link) and run `/birby:link brb_yourtoken`, or
-call the API directly (see below).
+Then just code. Your pet eats the tokens after every response. Check in with
+`npx birby pet`; remove everything with `npx birby uninstall`.
+
+Inside Claude Code you can also `/plugin marketplace add jkrperson/birby`,
+`/plugin install birby@birby`, and run `/birby:link` — the plugin is a thin
+wrapper that runs the same CLI.
+
+Using CI, or an agent that isn't supported yet? Mint a connect token at
+[birby.me/link](https://birby.me/link), then `npx birby login brb_yourtoken`
+and `npx birby feed --tokens 1234` (or call the API directly, see below).
+Self-hosting: `npx birby --api https://your.host`.
 
 Optional extras:
 
-- **Statusline pet** — add to `~/.claude/settings.json`:
-
-  ```json
-  {
-    "statusLine": {
-      "type": "command",
-      "command": "node \"$HOME/.claude/plugins/<birby plugin dir>/scripts/statusline.mjs\""
-    }
-  }
-  ```
+- **Statusline pet** — `npx birby install claude-code --statusline` appends
+  the pet to whatever Claude Code statusline you already have:
 
   → `🐤 Birby · happy · 🔥3 · 48.2k eaten today`
 
@@ -58,14 +59,16 @@ pnpm + Turborepo monorepo:
 | `apps/web`            | birby.me — Next.js site + API (Vercel, Neon, Drizzle)       |
 | `packages/core`       | pet logic: feeding, fullness decay, streaks, evolution      |
 | `packages/sprites`    | pixel art as data — grids render to canvas and SVG          |
-| `plugins/claude-code` | the Claude Code plugin (hook + skills, zero npm deps)       |
+| `packages/cli`        | `npx birby` — login, per-agent hook installers, feed, statusline |
+| `plugins/claude-code` | Claude Code plugin: two skills that shell out to `npx birby`  |
 | `.claude-plugin`      | marketplace manifest — this repo doubles as the marketplace |
 
 ## Develop
 
 ```bash
 pnpm install
-pnpm test          # core + sprites unit tests
+pnpm test          # core + sprites + cli unit tests
+node packages/cli/bin/birby.mjs --help   # run the CLI from the checkout
 
 cd apps/web
 cp .env.example .env.local   # defaults to an embedded PGlite database

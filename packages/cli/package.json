@@ -1,0 +1,42 @@
+{
+  "name": "birby",
+  "version": "0.2.0",
+  "description": "Feed your birby.me pixel pet with the tokens from every coding session — one command sets up Claude Code, Codex, Gemini CLI, Cursor, and OpenCode",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "birby": "./bin/birby.mjs"
+  },
+  "files": [
+    "bin",
+    "src"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jkrperson/birby",
+    "directory": "packages/cli"
+  },
+  "homepage": "https://birby.me",
+  "keywords": [
+    "birby",
+    "tamagotchi",
+    "claude-code",
+    "codex",
+    "gemini-cli",
+    "cursor",
+    "opencode"
+  ],
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "lint": "node --check bin/birby.mjs && node --check src/cli.mjs"
+  },
+  "devDependencies": {
+    "vitest": "^3.1.0"
+  }
+}
